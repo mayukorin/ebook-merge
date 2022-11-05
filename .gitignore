@@ -49,3 +49,4 @@ serviceAccount.json
 !.gcloudignore
 docker-compose.yml
 Makefile
+Dockerfile

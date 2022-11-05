@@ -50,3 +50,12 @@ serviceAccount.json
 docker-compose.yml
 Makefile
 Dockerfile
+.dockerignore
+
+Dockerfile.compose.build
+default.conf
+.eslintignore
+.eslintrc.js
+.prettierignore
+vite.config.ts
+tsconfig.json

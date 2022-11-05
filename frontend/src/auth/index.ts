@@ -1,6 +1,6 @@
 import { firebaseConfig } from "../../env";
 import { initializeApp } from 'firebase/app';
-import { GoogleAuthProvider, signInWithPopup, getAuth, signOut } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup, getAuth, signOut, onIdTokenChanged } from 'firebase/auth';
 
 const AuthService = () => {
     
@@ -16,9 +16,20 @@ const AuthService = () => {
         console.log(e);
     });
 
+    const observeToken = (cb: (token: string | null) => void) => onIdTokenChanged(auth, (user) => {
+        if (user !== null) {
+            user.getIdToken().then(cb);
+        } else {
+            cb(null);
+        }
+    });
+
+
+
     return {
         login,
         logout,
+        observeToken,
     };
 
 }

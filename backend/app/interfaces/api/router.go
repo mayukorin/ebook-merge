@@ -11,9 +11,10 @@ import (
 	"github.com/mayukorin/ebook-merge/app/interfaces/api/middleware"
 	"github.com/mayukorin/ebook-merge/app/usecase"
 	"github.com/rs/cors"
+	"golang.org/x/oauth2"
 )
 
-func NewRouter(db *sqlx.DB, firebaseClient *auth.Client) *mux.Router {
+func NewRouter(db *sqlx.DB, firebaseClient *auth.Client, gmailOauth2Config *oauth2.Config) *mux.Router {
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{http.MethodGet, http.MethodPost, http.MethodOptions},
@@ -24,13 +25,19 @@ func NewRouter(db *sqlx.DB, firebaseClient *auth.Client) *mux.Router {
 	a := middleware.NewAuthMiddleware(db, firebaseClient)
 	authChain := commonChain.Append(a.Handler)
 
+	gmailApiOauth2TokenUsecase := usecase.NewGmailApiOauth2TokenUseCase(db, gmailOauth2Config)
+	gmailApiOauth2TokenHandler := handler.NewGmailApiOAuth2TokenHandler(gmailApiOauth2TokenUsecase)
+
 	ebookUsecase := usecase.NewEbookUseCase(db)
-	ebookHandler := handler.NewEbookHandler(ebookUsecase)
+	ebookHandler := handler.NewEbookHandler(ebookUsecase, gmailApiOauth2TokenUsecase)
 
 	r := mux.NewRouter()
 	sr := r.PathPrefix("/v1").Subrouter()
 	sr.Methods(http.MethodGet, http.MethodOptions).Path("/ping").Handler(commonChain.Then(AppHandler{ping}))
 	sr.Methods(http.MethodGet, http.MethodOptions).Path("/list-ebooks").Handler(authChain.Then(AppHandler{ebookHandler.Index}))
+	sr.Methods(http.MethodGet, http.MethodOptions).Path("/confirm-gmail-api").Handler(commonChain.Then(AppHandler{gmailApiOauth2TokenHandler.GenerateGmailApiConsentPageURL}))
+	sr.Methods(http.MethodPost, http.MethodOptions).Path("/generate-gmail-api-oauth2-token").Handler(authChain.Then(AppHandler{gmailApiOauth2TokenHandler.CreateGmailApiOAuth2Token}))
+	sr.Methods(http.MethodGet, http.MethodOptions).Path("/scan-ebooks").Handler(authChain.Then(AppHandler{ebookHandler.ScanAllEbooksFromGmail}))
 
 	return r
 }

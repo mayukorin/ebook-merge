@@ -12,6 +12,7 @@ import { EBookList } from "./pages/EBookList";
 import { FlashMessageProvider } from "./contexts/FlashMessageContext";
 import { FlashMessage } from "./components/SnackBar";
 import Container from "@mui/material/Container";
+import { GmailOAuth2Callback } from "./pages/GmailOAuth2Callback";
 
 export const App: React.FC = () => {
   return (
@@ -31,6 +32,10 @@ export const App: React.FC = () => {
                     <Routes>
                       <Route path={"/"} element={<Top />} />
                       <Route path={"/ebooks"} element={<EBookList />} />
+                      <Route
+                        path={"/oauth2callback"}
+                        element={<GmailOAuth2Callback />}
+                      />
                     </Routes>
                   </Container>
                 </BrowserRouter>

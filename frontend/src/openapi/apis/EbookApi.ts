@@ -35,10 +35,9 @@ export class EbookApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         if (this.configuration && this.configuration.apiKey) {
-            console.log("okay");
             headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // Authorization authentication
         }
-        console.log("not okay")
+
         const response = await this.request({
             path: `/list-ebooks`,
             method: 'GET',
@@ -56,6 +55,37 @@ export class EbookApi extends runtime.BaseAPI {
     async listEbooks(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<ListEbook> {
         const response = await this.listEbooksRaw(initOverrides);
         return await response.value();
+    }
+
+    /**
+     * Gmailから購入した電子書籍の情報を取ってくる
+     * scan-ebooks
+     */
+    async scanEbooksRaw(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<void>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // Authorization authentication
+        }
+
+        const response = await this.request({
+            path: `/scan-ebooks`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Gmailから購入した電子書籍の情報を取ってくる
+     * scan-ebooks
+     */
+    async scanEbooks(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<void> {
+        await this.scanEbooksRaw(initOverrides);
     }
 
 }

@@ -37,6 +37,65 @@ paths:
           headers: {} 
       security:
         - Authorization: []
+  /confirm-gmail-api:
+    get:
+      description: GmailAPIの同意画面のURLを生成
+      summary: confirm-gmail-api
+      tags:
+        - OAuth2Token
+      operationId: confirm-gmail-api
+      deprecated: false
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/GmailApiConsentPageUrl'
+          headers: {}
+  /generate-gmail-api-oauth2-token:
+    post:
+      description: GmailAPIのトークンを生成
+      summary: create-gmail-api-oauth2-token
+      tags:
+        - OAuth2Token
+      operationId: create-gmail-api-oauth2-token
+      deprecated: false
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: ''
+          schema: 
+            $ref: '#/definitions/CreateGmailApiOAuth2TokenRequest'
+      responses:
+        '201':
+          description: Created
+          schema:
+            $ref: '#/definitions/CreateGmailApiOAuth2TokenResponse'
+          headers: {}
+      security:
+        - Authorization: []
+  /scan-ebooks:
+    get:
+      description: Gmailから購入した電子書籍の情報を取ってくる
+      summary: scan-ebooks
+      tags:
+        - Ebook
+      operationId: scan-ebooks
+      deprecated: false
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          headers: {}
+      security:
+        - Authorization: []
 definitions:
   ListEbook:
     title: ListEbook
@@ -67,5 +126,45 @@ definitions:
         format: int64
       name:
         type: string
+  GmailApiConsentPageUrl:
+    title: GmailApiConsentPageUrl
+    type: object
+    properties:
+      google_concent_page_url:
+        type: string
+    required:
+      - google_concent_page_url
+  CreateGmailApiOAuth2TokenRequest:
+    title: CreateGmailApiOauth2TokenRequest
+    type: object
+    properties:
+      code:
+        type: string
+      user_id:
+        type: integer
+        format: int64
+    required:
+      - code
+      - user_id
+  CreateGmailApiOAuth2TokenResponse:
+    title: CreateGmailApiOAuth2TokenResponse
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+  OAuth2UserInfo:
+    title: OAuth2UserInfo
+    type: object
+    properties:
+      id:
+        type: string
+      email:
+        type: string
+      verified_email:
+        type: boolean
+      picture:
+        type: string
 tags:
   - name: Ebook
+  - name: OAuth2Token

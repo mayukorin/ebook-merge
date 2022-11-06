@@ -17,7 +17,7 @@ import CableIcon from "@mui/icons-material/Cable";
 
 export const EBookList: React.FC = () => {
   const ebookClient = React.useContext(ApiClientContext).ebook;
-  //   const oAuth2TokenClient = React.useContext(ApiClientContext).oAuth2Token;
+  const oAuth2TokenClient = React.useContext(ApiClientContext).oauth2Token;
   const [ebooks, setEbooks] = React.useState<Array<Ebook>>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -42,26 +42,26 @@ export const EBookList: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  //   const updateOnClick = React.useCallback(() => {
-  //     setLoading(true);
-  //     ebookClient
-  //       .scanEbooks()
-  //       .catch((e) => {
-  //         console.error(e);
-  //       })
-  //       .finally(() => setLoading(false));
-  //   }, [ebookClient]);
+    const updateOnClick = React.useCallback(() => {
+      setLoading(true);
+      ebookClient
+        .scanEbooks()
+        .catch((e) => {
+          console.error(e);
+        })
+        .finally(() => setLoading(false));
+    }, [ebookClient]);
 
-  //   const connectOnClick = React.useCallback(() => {
-  //     oAuth2TokenClient
-  //       .confirmGmailApi()
-  //       .then((res) => {
-  //         window.location.replace(res.googleConcentPageUrl);
-  //       })
-  //       .catch((e) => {
-  //         console.error(e);
-  //       })
-  //   }, [oAuth2TokenClient]);
+    const connectOnClick = React.useCallback(() => {
+      oAuth2TokenClient
+        .confirmGmailApi()
+        .then((res) => {
+          window.location.replace(res.googleConcentPageUrl);
+        })
+        .catch((e) => {
+          console.error(e);
+        })
+    }, [oAuth2TokenClient]);
 
   return (
     <div>
@@ -70,7 +70,7 @@ export const EBookList: React.FC = () => {
         color="secondary"
         sx={{ borderRadius: 2 }}
         startIcon={<UpdateIcon />}
-        // onClick={() => updateOnClick()}
+        onClick={() => updateOnClick()}
       >
         Gmailから更新
       </Button>
@@ -108,7 +108,7 @@ export const EBookList: React.FC = () => {
               color="secondary"
               sx={{ borderRadius: 2 }}
               startIcon={<CableIcon />}
-              //   onClick={() => connectOnClick()}
+              onClick={() => connectOnClick()}
             >
               新しいGmailアドレスを連携
             </Button>

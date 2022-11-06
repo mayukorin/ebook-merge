@@ -18,7 +18,7 @@ export const theme = createTheme({
       paper: "#ffffff",
       default: "#000000",
     },
-    text: { primary: '#000000', secondary: '#009688' },
+    text: { primary: "#000000", secondary: "#009688" },
   },
   typography: {
     fontFamily: ["Inter"].join(","),

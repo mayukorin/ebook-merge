@@ -7,15 +7,15 @@ import Button from "@mui/material/Button";
 import { DamionFont } from "../materialui/theme";
 import { CourgetteFont } from "../materialui/theme";
 import { ThemeProvider } from "@mui/material/styles";
-// import { AuthContext } from "../contexts/AuthContext";
 import AuthService from "../auth";
 import { useNavigate } from "react-router-dom";
-// import { FlashMessageDispatchContext } from "../contexts/FlashMessageContext";
+import { AuthContext } from "../contexts/AuthContext";
+import { FlashMessageDispatchContext } from "../contexts/FlashMessageContext";
 
 export const Header: React.FC = () => {
-//   const authContext = React.useContext(AuthContext);
+  const authContext = React.useContext(AuthContext);
   const navigate = useNavigate();
-//   const { dispatch } = React.useContext(FlashMessageDispatchContext);
+  const { dispatch } = React.useContext(FlashMessageDispatchContext);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -27,11 +27,38 @@ export const Header: React.FC = () => {
             </Typography>
           </ThemeProvider>
           <ThemeProvider theme={CourgetteFont}>
-              <Button color="inherit" onClick={() => {
-                AuthService.login();
-                // navigate("/ebooks");
-              }}>LogIn</Button>
-            </ThemeProvider>
+            {authContext.token === null ? (
+              <Button
+                color="inherit"
+                onClick={() =>
+                  AuthService.login().then(() => {
+                    dispatch({
+                      type: "change",
+                      text: "ログインしました",
+                    });
+                    navigate("/ebooks");
+                  })
+                }
+              >
+                LogIn
+              </Button>
+            ) : (
+              <Button
+                color="inherit"
+                onClick={() =>
+                  AuthService.logout().then(() => {
+                    dispatch({
+                      type: "change",
+                      text: "ログアウトしました",
+                    });
+                    navigate("/");
+                  })
+                }
+              >
+                LogOut
+              </Button>
+            )}
+          </ThemeProvider>
         </Toolbar>
       </AppBar>
     </Box>

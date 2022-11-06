@@ -17,18 +17,18 @@ func RespondByJSON(w http.ResponseWriter, r *http.Request, statusCode int, res i
 		return
 	}
 
+	w.WriteHeader(statusCode)
 	_, err = w.Write(jres)
 	if err != nil {
 		fmt.Println(fmt.Errorf("failed to write jresponse: %w", err))
 		return
 	}
 
-	w.WriteHeader(statusCode)
-
 	return
 }
 
 func RespondErrByJSON(w http.ResponseWriter, r *http.Request, statusCode int, err error) {
+
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	httpErr := httperror.HttpError{
@@ -40,26 +40,25 @@ func RespondErrByJSON(w http.ResponseWriter, r *http.Request, statusCode int, er
 		return
 	}
 
+	w.WriteHeader(statusCode)
 	_, err = w.Write(jerr)
+
 	if err != nil {
 		fmt.Println(fmt.Errorf("failed to write jerr: %w", err))
 		return
 	}
-
-	w.WriteHeader(statusCode)
 
 	return
 }
 
 func respondMarshalErrByJSON(w http.ResponseWriter, err error) {
 
+	w.WriteHeader(http.StatusInternalServerError)
 	_, err = w.Write([]byte(err.Error()))
 	if err != nil {
 		fmt.Println(fmt.Errorf("failed to write marshal err: %w", err))
 		return
 	}
-
-	w.WriteHeader(http.StatusInternalServerError)
 
 	return
 }

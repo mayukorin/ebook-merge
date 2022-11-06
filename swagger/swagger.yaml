@@ -1,0 +1,71 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: e-book-merge
+  description: 電子書籍を一元管理
+  contact:
+    name: MAYUKO INOUE
+host: 'localhost:1991'
+basePath: /v1
+securityDefinitions:
+  Authorization:
+    name: Authorization
+    type: apiKey
+    in: header
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /list-ebooks:
+    get:
+      description: 電子書籍一覧を取ってくる
+      summary: list-ebooks
+      tags:
+        - Ebook
+      operationId: list-ebooks
+      deprecated: false
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ListEbook'
+          headers: {} 
+      security:
+        - Authorization: []
+definitions:
+  ListEbook:
+    title: ListEbook
+    type: object
+    properties:
+      ebooks:
+        type: array
+        items:
+          $ref: '#/definitions/Ebook'
+  Ebook:
+    title: Ebook
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      title:
+        type: string
+      ebook_service:
+        type: object
+        $ref: '#/definitions/EbookService'
+  EbookService:
+    title: EbookService
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+tags:
+  - name: Ebook

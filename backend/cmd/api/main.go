@@ -14,10 +14,7 @@ func main() {
 		fmt.Println(fmt.Errorf("failed open .env. %w", err))
 	}
 
-	firebaseServiceAccountKeyPath := os.Getenv("FIREBASE_SERVICE_ACCOUNT_KEY_PATH")
-	fmt.Println(firebaseServiceAccountKeyPath)
-
-	s, err := api.NewServer(os.Getenv("PLANET_SCALE_DSN"))
+	s, err := api.NewServer(os.Getenv("PLANET_SCALE_DSN"), os.Getenv("FIREBASE_SERVICE_ACCOUNT_KEY_PATH"))
 	if err != nil {
 		fmt.Println(fmt.Errorf("failed to new server: %s", err))
 	}

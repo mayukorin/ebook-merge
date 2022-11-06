@@ -57,5 +57,4 @@ default.conf
 .eslintignore
 .eslintrc.js
 .prettierignore
-vite.config.ts
 tsconfig.json

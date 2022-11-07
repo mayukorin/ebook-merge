@@ -10,10 +10,12 @@ import AuthService from "../auth";
 import { useNavigate } from "react-router-dom";
 import { FlashMessageDispatchContext } from "../contexts/FlashMessageContext";
 import Grid from "@mui/material/Grid";
+import { AuthContext } from "../contexts/AuthContext";
 
 export const Top: React.FC = () => {
   const navigate = useNavigate();
   const { dispatch } = React.useContext(FlashMessageDispatchContext);
+  const authContext = React.useContext(AuthContext);
 
   return (
     <>
@@ -36,24 +38,38 @@ export const Top: React.FC = () => {
         </CardContent>
         <CardActions>
           <Grid container justifyContent="center">
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={{ borderRadius: 2 }}
-              onClick={() =>
-                AuthService.login().then(() => {
-                  dispatch({
-                    type: "change",
-                    text: "ログインしました",
-                  });
-                  navigate("/ebooks");
-                })
-              }
-            >
-              使ってみる
-              <br />
-              Google アカウントでログイン
-            </Button>
+            {authContext.token === null ? (
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={{ borderRadius: 2 }}
+                onClick={() =>
+                  AuthService.login().then(() => {
+                    dispatch({
+                      type: "change",
+                      text: "ログインしました",
+                    });
+                    navigate("/ebooks");
+                  })
+                }
+              >
+                使ってみる
+                <br />
+                Google アカウントでログイン
+              </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={{ borderRadius: 2 }}
+                  onClick={() => {
+                    navigate("/ebooks");
+                  }}
+                >
+                  電子書籍一覧ページへ移動
+                </Button>
+              )
+            }
           </Grid>
         </CardActions>
         <CardContent>

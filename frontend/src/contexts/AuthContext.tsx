@@ -17,7 +17,6 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
   React.useEffect(() => {
     AuthService.observeToken((token) => {
-      console.log(token);
       setToken(token);
       setInitialized(true);
     });

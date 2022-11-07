@@ -65,15 +65,19 @@ export const EBookList: React.FC = () => {
 
   return (
     <div>
-      <Button
-        variant="contained"
-        color="secondary"
-        sx={{ borderRadius: 2 }}
-        startIcon={<UpdateIcon />}
-        onClick={() => updateOnClick()}
-      >
-        Gmailから更新
-      </Button>
+      {!loading && ebooks.length > 0 ? (
+        <Button
+          variant="contained"
+          color="secondary"
+          sx={{ borderRadius: 2 }}
+          startIcon={<UpdateIcon />}
+          onClick={() => updateOnClick()}
+        >
+          Gmailから更新
+        </Button>
+      ): (
+        <></>
+      )}
       <br />
       <br />
       <Typography
@@ -84,36 +88,59 @@ export const EBookList: React.FC = () => {
         電子書籍
       </Typography>
       {!loading ? (
-        <>
-          <Grid container sx={{ mt: 2 }}>
-            <Grid item xs={12}>
-              <TableContainer component={Paper}>
-                <Table
-                  aria-label="simple table"
-                  sx={{ wordWrap: "break-word" }}
+          ebooks.length > 0 ? (
+            <>
+              <Grid container sx={{ mt: 2 }}>
+                <Grid item xs={12}>
+                  <TableContainer component={Paper}>
+                    <Table
+                      aria-label="simple table"
+                      sx={{ wordWrap: "break-word" }}
+                    >
+                      <TableBody>
+                        {ebooks.map((e) => (
+                          <EbookRow ebook={e} key={e.id} />
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Grid>
+              </Grid>
+              <br />
+              <Grid container justifyContent="flex-end">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={{ borderRadius: 2 }}
+                  startIcon={<CableIcon />}
+                  onClick={() => connectOnClick()}
                 >
-                  <TableBody>
-                    {ebooks.map((e) => (
-                      <EbookRow ebook={e} key={e.id} />
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
-          </Grid>
-          <br />
-          <Grid container justifyContent="flex-end">
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={{ borderRadius: 2 }}
-              startIcon={<CableIcon />}
-              onClick={() => connectOnClick()}
-            >
-              新しいGmailアドレスを連携
-            </Button>
-          </Grid>
-        </>
+                  新しいGmailアドレスを連携
+                </Button>
+              </Grid>
+            </>
+          ) : (
+            <>
+              <Grid container sx={{ mt: 2 }}>
+                <Typography component="div" align="center">
+                  まずは，Gmail アドレスと連携して，購入した電子書籍情報を取ってきましょう！
+                </Typography>
+              </Grid>
+              <br />
+              <br />
+              <Grid container justifyContent="center">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={{ borderRadius: 2 }}
+                  startIcon={<CableIcon />}
+                  onClick={() => connectOnClick()}
+                >
+                  新しいGmailアドレスを連携
+                </Button>
+              </Grid>
+            </>
+          )
       ) : (
         <>
           <ReactLoading

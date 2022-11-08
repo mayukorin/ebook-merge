@@ -7,7 +7,7 @@ import (
 )
 
 func InsertOAuth2Token(db *sqlx.Tx, oauth2Token *model.GmailApiOauth2Token) (int64, error) {
-	stmt, err := db.Preparex("insert into gmail_api_oauth2_tokens (user_id, email, access_token, token_type, refresh_token, expiry) values (?, ?, ?, ?, ?, ?)")
+	stmt, err := db.Preparex("insert into gmail_api_oauth2_tokens (user_id, email, access_token, token_type, refresh_token, expiry) values (?, ?, ?, ?, ?, ?) on DUPLICATE KEY update access_token = ?, refresh_token = ?, expiry = ?")
 	if err != nil {
 		return 0, errors.Wrap(err, "failed to set perpared statement")
 	}
@@ -18,7 +18,7 @@ func InsertOAuth2Token(db *sqlx.Tx, oauth2Token *model.GmailApiOauth2Token) (int
 	}()
 
 	var id int64
-	insertResult, err := stmt.Exec(oauth2Token.UserID, oauth2Token.Email, oauth2Token.AccessToken, oauth2Token.TokenType, oauth2Token.RefreshToken, oauth2Token.Expiry)
+	insertResult, err := stmt.Exec(oauth2Token.UserID, oauth2Token.Email, oauth2Token.AccessToken, oauth2Token.TokenType, oauth2Token.RefreshToken, oauth2Token.Expiry, oauth2Token.AccessToken, oauth2Token.RefreshToken, oauth2Token.Expiry)
 	if err != nil {
 		return 0, errors.Wrap(err, "failed to execute insert oauth2_token")
 	}

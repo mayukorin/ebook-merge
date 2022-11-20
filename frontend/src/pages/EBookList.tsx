@@ -46,6 +46,16 @@ export const EBookList: React.FC = () => {
       setLoading(true);
       ebookClient
         .scanEbooks()
+        .then(() => {
+          return ebookClient.listEbooks()
+        })
+        .then((res) => {
+          console.log(res);
+          if (res.ebooks === undefined) {
+            return;
+          }
+          setEbooks(res.ebooks);
+        })
         .catch((e) => {
           console.error(e);
         })

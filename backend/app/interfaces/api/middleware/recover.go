@@ -13,6 +13,7 @@ func RecoverMiddleware(next http.Handler) http.Handler {
 		defer func() {
 			if err := recover(); err != nil {
 				fmt.Println("panic occured!")
+				fmt.Println(err)
 				httputil.RespondErrByJSON(w, r, http.StatusInternalServerError, errors.New("panic occured"))
 			}
 		}()

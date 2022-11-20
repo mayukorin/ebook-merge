@@ -9,12 +9,11 @@ import (
 )
 
 type EbookHandler struct {
-	gmailApiOauth2TokenUseCase *usecase.GmailApiOauth2TokenUseCase
-	ebookUseCase               *usecase.EbookUseCase
+	ebookUseCase *usecase.EbookUseCase
 }
 
-func NewEbookHandler(ebookUseCase *usecase.EbookUseCase, gmailApiOauth2TokenUseCase *usecase.GmailApiOauth2TokenUseCase) *EbookHandler {
-	return &EbookHandler{ebookUseCase: ebookUseCase, gmailApiOauth2TokenUseCase: gmailApiOauth2TokenUseCase}
+func NewEbookHandler(ebookUseCase *usecase.EbookUseCase) *EbookHandler {
+	return &EbookHandler{ebookUseCase: ebookUseCase}
 }
 
 func (e *EbookHandler) Index(_ http.ResponseWriter, r *http.Request) (int, interface{}, error) {
@@ -34,12 +33,23 @@ func (e *EbookHandler) Index(_ http.ResponseWriter, r *http.Request) (int, inter
 }
 
 func (e *EbookHandler) ScanAllEbooksFromGmail(_ http.ResponseWriter, r *http.Request) (int, interface{}, error) {
+
 	user, err := httputil.GetUserFromContext(r.Context())
 	if err != nil {
 		return http.StatusInternalServerError, nil, err
 	}
 
-	err = e.gmailApiOauth2TokenUseCase.ScanAllEbooksFromGmail(user.ID)
+	err = e.ebookUseCase.ScanAllEbooksFromGmail(user.ID)
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+	return http.StatusOK, nil, nil
+
+}
+
+func (e *EbookHandler) ScanTestEbooksFromGmail(_ http.ResponseWriter, r *http.Request) (int, interface{}, error) {
+
+	err := e.ebookUseCase.TestScanKindleEbooksFromGmail(47)
 	if err != nil {
 		return http.StatusInternalServerError, nil, err
 	}

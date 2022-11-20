@@ -28,16 +28,17 @@ func NewRouter(db *sqlx.DB, firebaseClient *auth.Client, gmailOauth2Config *oaut
 	gmailApiOauth2TokenUsecase := usecase.NewGmailApiOauth2TokenUseCase(db, gmailOauth2Config)
 	gmailApiOauth2TokenHandler := handler.NewGmailApiOAuth2TokenHandler(gmailApiOauth2TokenUsecase)
 
-	ebookUsecase := usecase.NewEbookUseCase(db)
-	ebookHandler := handler.NewEbookHandler(ebookUsecase, gmailApiOauth2TokenUsecase)
+	ebookUsecase := usecase.NewEbookUseCase(db, gmailOauth2Config)
+	ebookHandler := handler.NewEbookHandler(ebookUsecase)
 
 	r := mux.NewRouter()
 	sr := r.PathPrefix("/v1").Subrouter()
 	sr.Methods(http.MethodGet, http.MethodOptions).Path("/ping").Handler(commonChain.Then(AppHandler{ping}))
 	sr.Methods(http.MethodGet, http.MethodOptions).Path("/list-ebooks").Handler(authChain.Then(AppHandler{ebookHandler.Index}))
-	sr.Methods(http.MethodGet, http.MethodOptions).Path("/confirm-gmail-api").Handler(commonChain.Then(AppHandler{gmailApiOauth2TokenHandler.GenerateGmailApiConsentPageURL}))
-	sr.Methods(http.MethodPost, http.MethodOptions).Path("/generate-gmail-api-oauth2-token").Handler(authChain.Then(AppHandler{gmailApiOauth2TokenHandler.CreateGmailApiOAuth2Token}))
+	sr.Methods(http.MethodGet, http.MethodOptions).Path("/generate-consent-page-url-of-gmail-api").Handler(commonChain.Then(AppHandler{gmailApiOauth2TokenHandler.GenerateGmailApiConsentPageURL}))
+	sr.Methods(http.MethodPost, http.MethodOptions).Path("/generate-oauth2-token-of-gmail-api").Handler(authChain.Then(AppHandler{gmailApiOauth2TokenHandler.CreateGmailApiOAuth2Token}))
 	sr.Methods(http.MethodGet, http.MethodOptions).Path("/scan-ebooks").Handler(authChain.Then(AppHandler{ebookHandler.ScanAllEbooksFromGmail}))
+	sr.Methods(http.MethodGet, http.MethodOptions).Path("/test-scan-ebooks").Handler(commonChain.Then(AppHandler{ebookHandler.ScanTestEbooksFromGmail}))
 
 	return r
 }

@@ -88,4 +88,31 @@ export class EbookApi extends runtime.BaseAPI {
         await this.scanEbooksRaw(initOverrides);
     }
 
+    /**
+     * テスト-Gmailから購入した電子書籍の情報を取ってくる
+     * test-scan-ebooks
+     */
+    async testScanEbooksRaw(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<void>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/test-scan-ebooks`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * テスト-Gmailから購入した電子書籍の情報を取ってくる
+     * test-scan-ebooks
+     */
+    async testScanEbooks(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<void> {
+        await this.testScanEbooksRaw(initOverrides);
+    }
+
 }

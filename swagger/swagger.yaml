@@ -37,7 +37,7 @@ paths:
           headers: {} 
       security:
         - Authorization: []
-  /confirm-gmail-api:
+  /generate-consent-page-url-of-gmail-api:
     get:
       description: GmailAPIの同意画面のURLを生成
       summary: confirm-gmail-api
@@ -53,7 +53,7 @@ paths:
           schema:
             $ref: '#/definitions/GmailApiConsentPageUrl'
           headers: {}
-  /generate-gmail-api-oauth2-token:
+  /generate-oauth2-token-of-gmail-api:
     post:
       description: GmailAPIのトークンを生成
       summary: create-gmail-api-oauth2-token
@@ -96,6 +96,20 @@ paths:
           headers: {}
       security:
         - Authorization: []
+  /test-scan-ebooks:
+    get:
+      description: テスト-Gmailから購入した電子書籍の情報を取ってくる
+      summary: test-scan-ebooks
+      tags:
+        - Ebook
+      operationId: test-scan-ebooks
+      deprecated: false
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          headers: {}
 definitions:
   ListEbook:
     title: ListEbook

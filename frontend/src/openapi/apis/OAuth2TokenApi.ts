@@ -45,7 +45,7 @@ export class OAuth2TokenApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/confirm-gmail-api`,
+            path: `/generate-consent-page-url-of-gmail-api`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -83,7 +83,7 @@ export class OAuth2TokenApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/generate-gmail-api-oauth2-token`,
+            path: `/generate-oauth2-token-of-gmail-api`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,

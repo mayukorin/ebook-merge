@@ -3,9 +3,11 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"firebase.google.com/go/auth"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	"github.com/mayukorin/ebook-merge/db"
@@ -52,5 +54,5 @@ func NewServer(mysqlDSN string, firebaseServiceAccountKeyPath string, oauth2Clie
 }
 
 func (s *Server) Run(port string) {
-	http.ListenAndServe(":"+port, s.router)
+	http.ListenAndServe(":"+port, handlers.CombinedLoggingHandler(os.Stdout, s.router))
 }

@@ -35,26 +35,11 @@ func (g *GmailApiOAuth2TokenHandler) CreateGmailApiOAuth2Token(_ http.ResponseWr
 	if err := parseModelRequest(r, &req); err != nil {
 		return http.StatusBadRequest, nil, err
 	}
-	token, err := g.gmailApiOauth2TokenUseCase.GenerateOAuth2Token(swag.StringValue(req.Code))
+
+	newOauth2TokenId, err := g.gmailApiOauth2TokenUseCase.GenerateAndInsertOAuth2Token(swag.StringValue(req.Code), user.ID)
 	if err != nil {
 		return http.StatusInternalServerError, nil, err
 	}
 
-	client := g.gmailApiOauth2TokenUseCase.GenerateOAuth2Client(token)
-	reqForOAuth2UserInfo := g.gmailApiOauth2TokenUseCase.GenerateRequestForOauth2UserInfo(token)
-	resp, err := client.Do(reqForOAuth2UserInfo)
-	if err != nil {
-		return http.StatusBadRequest, nil, err
-	}
-
-	var userInfo generated_swagger.OAuth2UserInfo
-	if err = parseModelResponse(resp, &userInfo); err != nil {
-		return http.StatusInternalServerError, nil, err
-	}
-
-	newOauth2TokenId, err := g.gmailApiOauth2TokenUseCase.Insert(user.ID, token.AccessToken, token.TokenType, token.RefreshToken, token.Expiry, userInfo.Email)
-	if err != nil {
-		return http.StatusInternalServerError, nil, err
-	}
 	return http.StatusCreated, generated_swagger.CreateGmailAPIOAuth2TokenResponse{ID: newOauth2TokenId}, nil
 }

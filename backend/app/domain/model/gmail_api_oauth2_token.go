@@ -16,7 +16,7 @@ type GmailApiOauth2Token struct {
 	Expiry       time.Time `db:"expiry"`
 }
 
-func (g *GmailApiOauth2Token) ConvertToOauth2Token() *oauth2.Token {
+func (g *GmailApiOauth2Token) ConvertToOauth2TokenOfGoPKG() *oauth2.Token {
 	return &oauth2.Token{
 		AccessToken:  g.AccessToken,
 		TokenType:    g.TokenType,
